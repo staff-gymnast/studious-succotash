@@ -41,7 +41,7 @@ class TreeMap(LinkedBinaryTree, MapBase):
         """Return Position of p's subtree having key k, or last node searched."""
         if k == p.key():  # found match
             return p
-        elif k < p.key():  # search left subtree
+        if k < p.key():  # search left subtree
             if self.left(p) is not None:
                 return self._subtree_search(self.left(p), k)
         else:  # search right subtree
@@ -80,14 +80,13 @@ class TreeMap(LinkedBinaryTree, MapBase):
         self._validate(p)  # inherited from LinkedBinaryTree
         if self.left(p):
             return self._subtree_last_position(self.left(p))
-        else:
-            # walk upward
-            walk = p
+        # walk upward
+        walk = p
+        above = self.parent(walk)
+        while above is not None and walk == self.left(above):
+            walk = above
             above = self.parent(walk)
-            while above is not None and walk == self.left(above):
-                walk = above
-                above = self.parent(walk)
-            return above
+        return above
 
     def after(self, p):
         """Return the Position just after p in the natural order.
@@ -97,22 +96,20 @@ class TreeMap(LinkedBinaryTree, MapBase):
         self._validate(p)  # inherited from LinkedBinaryTree
         if self.right(p):
             return self._subtree_first_position(self.right(p))
-        else:
-            walk = p
+        walk = p
+        above = self.parent(walk)
+        while above is not None and walk == self.right(above):
+            walk = above
             above = self.parent(walk)
-            while above is not None and walk == self.right(above):
-                walk = above
-                above = self.parent(walk)
-            return above
+        return above
 
     def find_position(self, k):
         """Return position with key k, or else neighbor (or None if empty)."""
         if self.is_empty():
             return None
-        else:
-            p = self._subtree_search(self.root(), k)
-            self._rebalance_access(p)  # hook for balanced tree subclasses
-            return p
+        p = self._subtree_search(self.root(), k)
+        self._rebalance_access(p)  # hook for balanced tree subclasses
+        return p
 
     def delete(self, p):
         """Remove the item at given Position."""
@@ -131,12 +128,11 @@ class TreeMap(LinkedBinaryTree, MapBase):
         """Return value associated with key k (raise KeyError if not found)."""
         if self.is_empty():
             raise KeyError("Key Error: " + repr(k))
-        else:
-            p = self._subtree_search(self.root(), k)
-            self._rebalance_access(p)  # hook for balanced tree subclasses
-            if k != p.key():
-                raise KeyError("Key Error: " + repr(k))
-            return p.value()
+        p = self._subtree_search(self.root(), k)
+        self._rebalance_access(p)  # hook for balanced tree subclasses
+        if k != p.key():
+            raise KeyError("Key Error: " + repr(k))
+        return p.value()
 
     def __setitem__(self, k, v):
         """Assign value v to key k, overwriting existing value if present."""
@@ -148,12 +144,11 @@ class TreeMap(LinkedBinaryTree, MapBase):
                 p.element()._value = v  # replace existing item's value
                 self._rebalance_access(p)  # hook for balanced tree subclasses
                 return
+            item = self._Item(k, v)
+            if p.key() < k:
+                leaf = self._add_right(p, item)  # inherited from LinkedBinaryTree
             else:
-                item = self._Item(k, v)
-                if p.key() < k:
-                    leaf = self._add_right(p, item)  # inherited from LinkedBinaryTree
-                else:
-                    leaf = self._add_left(p, item)  # inherited from LinkedBinaryTree
+                leaf = self._add_left(p, item)  # inherited from LinkedBinaryTree
         self._rebalance_insert(leaf)  # hook for balanced tree subclasses
 
     def __delitem__(self, k):
@@ -185,9 +180,8 @@ class TreeMap(LinkedBinaryTree, MapBase):
         """Return (key,value) pair with minimum key (or None if empty)."""
         if self.is_empty():
             return None
-        else:
-            p = self.first()
-            return (p.key(), p.value())
+        p = self.first()
+        return (p.key(), p.value())
 
     def find_max(self):
         """Return (key,value) pair with maximum key (or None if empty)."""
@@ -204,11 +198,10 @@ class TreeMap(LinkedBinaryTree, MapBase):
         """
         if self.is_empty():
             return None
-        else:
-            p = self.find_position(k)
-            if k < p.key():
-                p = self.before(p)
-            return (p.key(), p.value()) if p is not None else None
+        p = self.find_position(k)
+        if k < p.key():
+            p = self.before(p)
+        return (p.key(), p.value()) if p is not None else None
 
     def find_lt(self, k):
         """Return (key,value) pair with greatest key strictly less than k.
@@ -217,11 +210,10 @@ class TreeMap(LinkedBinaryTree, MapBase):
         """
         if self.is_empty():
             return None
-        else:
-            p = self.find_position(k)
-            if not p.key() < k:
-                p = self.before(p)
-            return (p.key(), p.value()) if p is not None else None
+        p = self.find_position(k)
+        if not p.key() < k:
+            p = self.before(p)
+        return (p.key(), p.value()) if p is not None else None
 
     def find_ge(self, k):
         """Return (key,value) pair with least key greater than or equal to k.
@@ -230,11 +222,10 @@ class TreeMap(LinkedBinaryTree, MapBase):
         """
         if self.is_empty():
             return None
-        else:
-            p = self.find_position(k)  # may not find exact match
-            if p.key() < k:  # p's key is too small
-                p = self.after(p)
-            return (p.key(), p.value()) if p is not None else None
+        p = self.find_position(k)  # may not find exact match
+        if p.key() < k:  # p's key is too small
+            p = self.after(p)
+        return (p.key(), p.value()) if p is not None else None
 
     def find_gt(self, k):
         """Return (key,value) pair with least key strictly greater than k.
@@ -243,11 +234,10 @@ class TreeMap(LinkedBinaryTree, MapBase):
         """
         if self.is_empty():
             return None
-        else:
-            p = self.find_position(k)
-            if not k < p.key():
-                p = self.after(p)
-            return (p.key(), p.value()) if p is not None else None
+        p = self.find_position(k)
+        if not k < p.key():
+            p = self.after(p)
+        return (p.key(), p.value()) if p is not None else None
 
     def find_range(self, start, stop):
         """Iterate all (key,value) pairs such that start <= key < stop.
@@ -270,15 +260,12 @@ class TreeMap(LinkedBinaryTree, MapBase):
     # --------------------- hooks used by subclasses to balance a tree ---------------------
     def _rebalance_insert(self, p):
         """Call to indicate that position p is newly added."""
-        pass
 
     def _rebalance_delete(self, p):
         """Call to indicate that a child of p has been removed."""
-        pass
 
     def _rebalance_access(self, p):
         """Call to indicate that position p was recently accessed."""
-        pass
 
     # --------------------- nonpublic methods to support tree balancing ---------------------
 
@@ -350,7 +337,7 @@ class TreeMap(LinkedBinaryTree, MapBase):
         if (x == self.right(y)) == (y == self.right(z)):  # matching alignments
             self._rotate(y)  # single rotation (of y)
             return y  # y is new subtree root
-        else:  # opposite alignments
-            self._rotate(x)  # double rotation (of x)
-            self._rotate(x)
-            return x  # x is new subtree root
+        # opposite alignments
+        self._rotate(x)  # double rotation (of x)
+        self._rotate(x)
+        return x  # x is new subtree root
