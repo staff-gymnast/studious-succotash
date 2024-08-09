@@ -20,7 +20,6 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from linked_queue import LinkedQueue
-import collections
 
 class Tree:
   """Abstract base class representing a tree structure."""
