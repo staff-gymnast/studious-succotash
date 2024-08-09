@@ -328,13 +328,13 @@ class TreeMap(LinkedBinaryTree, MapBase):
 
     Assumes the nodes are in one of the following configurations:
 
-        z=a                 z=c           z=a               z=c  
-       /  \                /  \          /  \              /  \  
-      t0  y=b             y=b  t3       t0   y=c          y=a  t3 
-         /  \            /  \               /  \         /  \     
-        t1  x=c         x=a  t2            x=b  t3      t0   x=b    
-           /  \        /  \               /  \              /  \    
-          t2  t3      t0  t1             t1  t2            t1  t2   
+        z=a                 z=c           z=a               z=c
+       /  \                /  \          /  \              /  \
+      t0  y=b             y=b  t3       t0   y=c          y=a  t3
+         /  \            /  \               /  \         /  \
+        t1  x=c         x=a  t2            x=b  t3      t0   x=b
+           /  \        /  \               /  \              /  \
+          t2  t3      t0  t1             t1  t2            t1  t2
 
     The subtree will be restructured so that the node with key b becomes its root.
 
