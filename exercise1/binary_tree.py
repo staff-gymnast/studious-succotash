@@ -46,11 +46,9 @@ class BinaryTree(Tree):
         parent = self.parent(p)
         if parent is None:  # p must be the root
             return None  # root has no sibling
-        else:
-            if p == self.left(parent):
-                return self.right(parent)  # possibly None
-            else:
-                return self.left(parent)  # possibly None
+        if p == self.left(parent):
+            return self.right(parent)  # possibly None
+        return self.left(parent)  # possibly None
 
     def children(self, p):
         """Generate an iteration of Positions representing p's children."""

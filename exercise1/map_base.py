@@ -39,7 +39,7 @@ class MapBase(MutableMapping):
             return self._key == other._key  # compare items based on their keys
 
         def __ne__(self, other):
-            return not (self == other)  # opposite of __eq__
+            return not self == other  # opposite of __eq__
 
         def __lt__(self, other):
             return self._key < other._key  # compare items based on their keys
