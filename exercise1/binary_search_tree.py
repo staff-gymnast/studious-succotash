@@ -294,17 +294,16 @@ class TreeMap(LinkedBinaryTree, MapBase):
     def _rotate(self, p):
         """Rotate Position p above its parent.
 
-    Switches between these configurations, depending on whether p==a or p==b.
+        Switches between these configurations, depending on whether p==a or p==b.
 
-          b                  a
-         / \                /  \
-        a  t2             t0   b
-       / \                     / \
-      t0  t1                  t1  t2
+              b                  a
+             / \                /  \
+            a  t2             t0   b
+           / \                     / \
+          t0  t1                  t1  t2
 
-    Caller should ensure that p is not the root.
-    """
-        """Rotate Position p above its parent."""
+        Caller should ensure that p is not the root.
+        """
         x = p._node
         y = x._parent  # we assume this exists
         z = y._parent  # grandparent (possibly None)
@@ -324,29 +323,28 @@ class TreeMap(LinkedBinaryTree, MapBase):
     def _restructure(self, x):
         """Perform a trinode restructure among Position x, its parent, and its grandparent.
 
-    Return the Position that becomes root of the restructured subtree.
+        Return the Position that becomes root of the restructured subtree.
 
-    Assumes the nodes are in one of the following configurations:
+        Assumes the nodes are in one of the following configurations:
 
-        z=a                 z=c           z=a               z=c
-       /  \                /  \          /  \              /  \
-      t0  y=b             y=b  t3       t0   y=c          y=a  t3
-         /  \            /  \               /  \         /  \
-        t1  x=c         x=a  t2            x=b  t3      t0   x=b
-           /  \        /  \               /  \              /  \
-          t2  t3      t0  t1             t1  t2            t1  t2
+            z=a                 z=c           z=a               z=c
+           /  \                /  \          /  \              /  \
+          t0  y=b             y=b  t3       t0   y=c          y=a  t3
+             /  \            /  \               /  \         /  \
+            t1  x=c         x=a  t2            x=b  t3      t0   x=b
+               /  \        /  \               /  \              /  \
+              t2  t3      t0  t1             t1  t2            t1  t2
 
-    The subtree will be restructured so that the node with key b becomes its root.
+        The subtree will be restructured so that the node with key b becomes its root.
 
-              b
-            /   \
-          a       c
-         / \     / \
-        t0  t1  t2  t3
+                  b
+                /   \
+              a       c
+             / \     / \
+            t0  t1  t2  t3
 
-    Caller should ensure that x has a grandparent.
-    """
-        """Perform trinode restructure of Position x with parent/grandparent."""
+        Caller should ensure that x has a grandparent.
+        """
         y = self.parent(x)
         z = self.parent(y)
         if (x == self.right(y)) == (y == self.right(z)):  # matching alignments
