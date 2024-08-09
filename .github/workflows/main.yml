@@ -33,5 +33,5 @@ jobs:
           VALIDATE_JSCPD: false
           VALIDATE_GITLEAKS: false
           VALIDATE_CHECKOV: false
-          FILTER_REGEX_INCLUDE: exercise1
+          FILTER_REGEX_INCLUDE: exercise2
 ...
