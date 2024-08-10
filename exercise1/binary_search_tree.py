@@ -39,15 +39,24 @@ class TreeMap(LinkedBinaryTree, MapBase):
     # ------------------------------- nonpublic utilities -------------------------------
     def _subtree_search(self, p, k):
         """Return Position of p's subtree having key k, or last node searched."""
-        if k == p.key():  # found match
-            return p
-        if k < p.key():  # search left subtree
-            if self.left(p) is not None:
-                return self._subtree_search(self.left(p), k)
-        else:  # search right subtree
-            if self.right(p) is not None:
-                return self._subtree_search(self.right(p), k)
-        return p  # unsucessful search
+
+        # Loop through the subtree starting from Position p
+        while p is not None:
+
+            # Return the current Position if the key of the current position matches the search key
+            if k == p.key():
+                return p
+
+            # Move to the left subtree if the search key is smaller
+            if k < p.key():
+                p = self.left(p)
+
+            # Move to the right subtree if the search key is larger
+            else:
+                p = self.right(p)
+
+        # Return the last node searched if the key was not found
+        return p
 
     def _subtree_first_position(self, p):
         """Return Position of first item in subtree rooted at p."""
